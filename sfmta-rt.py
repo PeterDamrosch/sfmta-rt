@@ -27,4 +27,16 @@ def get_route_list(agency_code):
 
 
 
+
+
+
+
+
+# Gets all the stops and inbound and outbound stop orders for that route
+# Can do for one route or up to 100 routes (SFMTA has 83 total)
+# As well as paths - don't need this for now
+#def get_route_config(agency_code):
+	#base_url = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a="
+	#routeConfig = base_url + agency_code
+
 #http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=sf-muni
