@@ -3,10 +3,8 @@ import requests
 import xml.etree.ElementTree
 
 # Get a list of routes from the Nextbus API
-# Later put back into a function once done developing
 
 def get_route_list(agency_code):
-	
 	# Build URL
 	base_url = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a="
 	routeList_url = base_url + agency_code
@@ -24,6 +22,7 @@ def get_route_list(agency_code):
 		title = route.get('title')
 		route_dict[tag] = title
 
+	# Return results
 	return(route_dict)
 
 
