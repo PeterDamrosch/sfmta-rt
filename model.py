@@ -1,5 +1,5 @@
 # Model for xml response from NextBus sf-muni
-# Adapted from Matt Conway's gtfsrdb
+# Adapted from Matt Conway's gtfsrdb - https://github.com/mattwigway/gtfsrdb
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Float

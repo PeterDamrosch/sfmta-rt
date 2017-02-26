@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from model import *
 
 # Get a list of routes from the SF-Muni Nextbus API
-# Adapted from Matt Conway's gtfsrdb
+# Adapted from Matt Conway's gtfsrdb - https://github.com/mattwigway/gtfsrdb
 
 # Parse options - database URL and wait time (default 30)
 p = OptionParser()
@@ -31,28 +31,31 @@ engine = create_engine(opts.dsn)
 session = sessionmaker(bind=engine)()
 Base.metadata.create_all(engine)
 
+# Starter time for the first request, gets updated with each request to only add the vehicles that have moved
+request_time = datetime.datetime.now()
+epoch_time = int(request_time.timestamp())
+
 # Send requests
 keep_running = True
 while keep_running:
 
 	try:
 		# Send request
-		request_time = datetime.datetime.now()
-		vehiclePositions_url = "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni"
+		base_url = "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&t="
+		vehiclePositions_url = base_url + str(epoch_time)
 		response = requests.get(vehiclePositions_url)
+
+		# Update times
+		request_time = datetime.datetime.now()
+		epoch_time = int(request_time.timestamp())
 
 		# Create XML tree
 		vp_tree = xml.etree.ElementTree.fromstring(response.content)
 		vehicle_tree = vp_tree.findall('vehicle')
 
-		# Loop through tree pulling out each vehicle
 		for vehicle in vehicle_tree:
-			# Empty lead vehicle since they don't all have them (for two car trains)
-			#leading_vehicle = ''
-			#if vehicle.get('leadingVehicleId'):
-				#leading_vehicle = vehicle.get('leadingVehicleId')
 
-			# Create row for vehicle
+			# Create row for each vehicle
 			vehicle_update = VehiclePosition(
 				veh_id = vehicle.get('id'),
 				route_tag = vehicle.get('routeTag'),
